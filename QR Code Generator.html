@@ -1,0 +1,144 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive 3D QR Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    overflow:hidden;
+}
+
+/* Background animation */
+body::before{
+    content:"";
+    position:absolute;
+    width:300%;
+    height:300%;
+    background:conic-gradient(#22c55e,#06b6d4,#9333ea,#22c55e);
+    animation:rotate 20s linear infinite;
+    z-index:0;
+}
+
+@keyframes rotate{
+    100%{ transform:rotate(360deg);} 
+}
+
+/* 🔥 RESPONSIVE CONTAINER */
+.container{
+    position:relative;
+    z-index:2;
+    padding:30px 20px;
+    width:90%;
+    max-width:350px;
+    border-radius:20px;
+    backdrop-filter:blur(20px);
+    background:rgba(255,255,255,0.05);
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    text-align:center;
+    transform-style:preserve-3d;
+    transition:0.5s;
+}
+
+.container:hover{
+    transform:rotateY(10deg) rotateX(10deg);
+}
+
+/* 📱 RESPONSIVE TEXT */
+h1{
+    color:white;
+    margin-bottom:20px;
+    font-size:22px;
+}
+
+/* 📱 FULL WIDTH INPUT */
+input{
+    padding:12px;
+    width:100%;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    font-size:14px;
+}
+
+/* 📱 FULL WIDTH BUTTON */
+button{
+    margin-top:15px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#22c55e;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#16a34a;
+    transform:scale(1.05);
+}
+
+/* 📱 RESPONSIVE IMAGE */
+img{
+    margin-top:20px;
+    width:100%;
+    max-width:200px;
+    height:auto;
+    border-radius:10px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* 📱 MOBILE OPTIMIZATION */
+@media (max-width:480px){
+    h1{
+        font-size:18px;
+    }
+
+    .container{
+        padding:25px 15px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✨ 3D QR Generator</h1>
+    <input type="text" id="text" placeholder="Enter your data">
+    <button onclick="generateQR()">Generate QR</button>
+    <img id="qr">
+</div>
+
+<script>
+function generateQR(){
+    let data = document.getElementById('text').value.trim();
+    let qr = document.getElementById('qr');
+
+    if(data === ""){
+        alert("Enter something!");
+        return;
+    }
+
+    qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(data);
+}
+</script>
+
+</body>
+</html>
