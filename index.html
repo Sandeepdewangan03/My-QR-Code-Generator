@@ -3,140 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Responsive 3D QR Generator</title>
+<title>QR Code Generator</title>
 
+<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
-}
-
 body{
-    min-height:100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#0f172a,#1e293b);
-    overflow:hidden;
+    height:100vh;
+    margin:0;
+    color:#fff;
 }
 
-/* Background animation */
-body::before{
-    content:"";
-    position:absolute;
-    width:300%;
-    height:300%;
-    background:conic-gradient(#22c55e,#06b6d4,#9333ea,#22c55e);
-    animation:rotate 20s linear infinite;
-    z-index:0;
-}
-
-@keyframes rotate{
-    100%{ transform:rotate(360deg);} 
-}
-
-/* 🔥 RESPONSIVE CONTAINER */
 .container{
-    position:relative;
-    z-index:2;
-    padding:30px 20px;
-    width:90%;
-    max-width:350px;
-    border-radius:20px;
-    backdrop-filter:blur(20px);
-    background:rgba(255,255,255,0.05);
-    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    background:#1e1e2f;
+    padding:25px;
+    border-radius:15px;
     text-align:center;
-    transform-style:preserve-3d;
-    transition:0.5s;
-}
-
-.container:hover{
-    transform:rotateY(10deg) rotateX(10deg);
-}
-
-/* 📱 RESPONSIVE TEXT */
-h1{
-    color:white;
-    margin-bottom:20px;
-    font-size:22px;
-}
-
-/* 📱 FULL WIDTH INPUT */
-input{
-    padding:12px;
-    width:100%;
-    border-radius:10px;
-    border:none;
-    outline:none;
-    font-size:14px;
-}
-
-/* 📱 FULL WIDTH BUTTON */
-button{
-    margin-top:15px;
-    padding:12px;
-    width:100%;
-    border:none;
-    border-radius:10px;
-    background:#22c55e;
-    color:white;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    background:#16a34a;
-    transform:scale(1.05);
-}
-
-/* 📱 RESPONSIVE IMAGE */
-img{
-    margin-top:20px;
-    width:100%;
-    max-width:200px;
-    height:auto;
-    border-radius:10px;
+    width:300px;
     box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* 📱 MOBILE OPTIMIZATION */
-@media (max-width:480px){
-    h1{
-        font-size:18px;
-    }
-
-    .container{
-        padding:25px 15px;
-    }
+h2{
+    margin-bottom:15px;
 }
 
+input{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    margin-bottom:15px;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin:5px;
+    font-weight:bold;
+}
+
+.generate{
+    background:#00c9ff;
+    color:#000;
+}
+
+.download{
+    background:#00ff94;
+    color:#000;
+}
+
+#qrBox{
+    margin-top:15px;
+}
+
+canvas{
+    margin-top:10px;
+}
 </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1>✨ 3D QR Generator</h1>
-    <input type="text" id="text" placeholder="Enter your data">
-    <button onclick="generateQR()">Generate QR</button>
-    <img id="qr">
+    <h2>QR Generator</h2>
+
+    <input type="text" id="qrText" placeholder="Enter text or URL">
+
+    <button class="generate" onclick="generateQR()">Generate</button>
+    <button class="download" onclick="downloadQR()" id="downloadBtn" disabled>Download</button>
+
+    <div id="qrBox"></div>
 </div>
+
+<!-- QR Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <script>
 function generateQR(){
-    let data = document.getElementById('text').value.trim();
-    let qr = document.getElementById('qr');
+    let text = document.getElementById("qrText").value;
+    let qrBox = document.getElementById("qrBox");
 
-    if(data === ""){
-        alert("Enter something!");
+    if(text === ""){
+        alert("Please enter text!");
         return;
     }
 
-    qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(data);
+    qrBox.innerHTML = "";
+
+    let canvas = document.createElement("canvas");
+    qrBox.appendChild(canvas);
+
+    QRCode.toCanvas(canvas, text, { width: 200 }, function (error) {
+        if (error) console.error(error);
+    });
+
+    document.getElementById("downloadBtn").disabled = false;
+}
+
+function downloadQR(){
+    let canvas = document.querySelector("canvas");
+
+    if(!canvas){
+        alert("Generate QR first!");
+        return;
+    }
+
+    let link = document.createElement("a");
+    link.download = "qr-code.png";
+    link.href = canvas.toDataURL();
+    link.click();
 }
 </script>
 
